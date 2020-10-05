@@ -1,0 +1,22 @@
+frameworkVersion: '>=2.4.0 <2.5.0'
+
+plugins:
+  - serverless-stack-termination-protection
+  - serverless-pseudo-parameters
+  - serverless-dotenv-plugin
+
+service: cloudwatch-rollbar-sync
+
+provider:
+  name: aws
+  runtime: java11
+  memorySize: 1024
+  stage: ${env:STAGE}
+  region: ${opt:region, 'eu-west-2'}
+  timeout: 30
+  versionFunctions: false
+    
+package:
+  individually: true
+  excludeDevDependencies: true
+  
