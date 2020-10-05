@@ -1,0 +1,3 @@
+rootProject.name = 'cloudwatch-rollbar-sync'
+
+include 'function-cloudwatch-rollbar'

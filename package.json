@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-stack-termination-protection": "^1.0.4"
+  }
+}
