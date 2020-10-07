@@ -46,7 +46,7 @@ public class LogLevelEvaluatorUTest {
             Level result = evaluator.apply(message);
             assertThat(result).isEqualTo(WARNING);
         }
-
+        
         @ValueSource(strings = { "WARN", "WARNING", "Warn" })
         @ParameterizedTest
         public void testApply_whenMessageContainsLessImportantLevels_expectWarningResult(String alias) {
@@ -56,7 +56,7 @@ public class LogLevelEvaluatorUTest {
             Level result = evaluator.apply(message);
             assertThat(result).isEqualTo(WARNING);
         }
-
+        
         @ValueSource(strings = { "WARN", "WARNING", "Warn" })
         @ParameterizedTest
         public void testApply_whenMessageContainsMoreImportantLevels_expectErrorResult(String alias) {
