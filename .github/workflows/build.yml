@@ -1,4 +1,4 @@
-name: Build - Amazon CloudWatch to Rollbar Sync
+name: Build - cloudwatch2rollbar
 
 on: push
 

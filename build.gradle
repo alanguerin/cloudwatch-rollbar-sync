@@ -32,6 +32,9 @@ subprojects {
             awsLambdaLog4j2Version = '1.2.0'
             log4j2Version = '2.13.3'
             jacksonVersion = '2.11.3'
+            apacheCommonsIOVersion = '2.8.0'
+            apacheCommonsLangVersion = '3.11'
+            rollbarVersion = '1.7.5'
             
             junitVersion = '5.7.0'
             assertjVersion = '3.17.2'
@@ -50,6 +53,9 @@ subprojects {
         implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
         implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
         implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+
+        implementation "commons-io:commons-io:${apacheCommonsIOVersion}"
+        implementation "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}"
 
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
@@ -99,8 +105,10 @@ subprojects {
     build.dependsOn buildZip
 }
 
-project(':function-cloudwatch-rollbar') {
+project('function-cloudwatch2rollbar') {
     dependencies {
         implementation "com.amazonaws:aws-java-sdk-cloudwatch:${awsSdkVersion}"
+        implementation "com.rollbar:rollbar-java:${rollbarVersion}"
+        implementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
     }
 }
