@@ -5,11 +5,13 @@ import com.alanguerin.logging.Loggable;
 import com.alanguerin.system.Environmentable;
 import com.alanguerin.util.Base64Decoder;
 import com.alanguerin.util.GZipDecompressor;
+import com.alanguerin.util.LogLevelEvaluator;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.CloudWatchLogsEvent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rollbar.api.payload.data.Level;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.Config;
 import com.rollbar.notifier.config.ConfigBuilder;
@@ -28,6 +30,7 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Base64Decoder base64Decoder = new Base64Decoder();
     private final GZipDecompressor gzipDecompressor = new GZipDecompressor();
+    private final LogLevelEvaluator levelEvaluator = new LogLevelEvaluator();
     
     @Override
     public Void handleRequest(CloudWatchLogsEvent request, Context context) {
@@ -64,9 +67,16 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
                     );
                     
                     eventRequest.getEvents().forEach(event -> {
-                        // TODO Evaluate log level for each event.
-                        // TODO Filter log levels.
-                        rollbar.log(event.getMessage(), custom);
+                        Level level = Optional.ofNullable(event.getMessage())
+                            .map(getLevelEvaluator())
+                            .orElse(INFO);
+                        
+                        if (!isAllowed(level)) {
+                            getLogger().debug("Log message filtered out. [level={}]", level.toString());
+                            return; // Skip this log event.
+                        }
+
+                        rollbar.log(event.getMessage(), custom, level);
                     });
 
                     rollbar.close(true);
@@ -89,6 +99,16 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
             getLogger().error("Unexpected exception.", e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Determine if the provided log level should be filtered out.
+     */
+    private boolean isAllowed(Level level) {
+        return Optional.ofNullable(getEnv("ROLLBAR_FILTER_THRESHOLD"))
+            .map(Level::lookupByName)
+            .filter(threshold -> level.level() >= threshold.level())
+            .isPresent();
     }
     
 }
