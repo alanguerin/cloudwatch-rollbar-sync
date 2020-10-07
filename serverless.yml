@@ -5,7 +5,7 @@ plugins:
   - serverless-pseudo-parameters
   - serverless-dotenv-plugin
 
-service: cloudwatch-rollbar-sync
+service: cloudwatch2rollbar
 
 provider:
   name: aws
@@ -19,4 +19,12 @@ provider:
 package:
   individually: true
   excludeDevDependencies: true
-  
+
+functions:
+  cloudwatch2rollbar:
+    handler: com.alanguerin.Handler
+    package:
+      artifact: function-cloudwatch2rollbar/build/distributions/function-cloudwatch2rollbar.zip
+    events:
+      - cloudwatchLog: '/aws/lambda/bloomboxclub-floraathome-fulfillment-test-fetch-stock'
+      
