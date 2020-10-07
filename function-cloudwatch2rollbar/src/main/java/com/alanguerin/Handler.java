@@ -71,8 +71,9 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
                             .map(getLevelEvaluator())
                             .orElse(INFO);
                         
-                        if (isFiltered(level)) {
-                            return; // Skip this log message.
+                        if (!isAllowed(level)) {
+                            getLogger().debug("Log message filtered out. [level={}]", level.toString());
+                            return; // Skip this log event.
                         }
 
                         rollbar.log(event.getMessage(), custom, level);
@@ -98,6 +99,16 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
             getLogger().error("Unexpected exception.", e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Determine if the provided log level should be filtered out.
+     */
+    private boolean isAllowed(Level level) {
+        return Optional.ofNullable(getEnv("ROLLBAR_FILTER_THRESHOLD"))
+            .map(Level::lookupByName)
+            .filter(threshold -> level.level() >= threshold.level())
+            .isPresent();
     }
     
     private boolean isFiltered(Level level) {
