@@ -25,5 +25,5 @@ functions:
     handler: com.alanguerin.Handler
     package:
       artifact: function-cloudwatch2rollbar/build/distributions/function-cloudwatch2rollbar.zip
-    events: ${file(.env.${self:provider.stage}.yml):cloudwatchLogs}
+    events: ${file(config.yml):cloudwatchLogs}
     
