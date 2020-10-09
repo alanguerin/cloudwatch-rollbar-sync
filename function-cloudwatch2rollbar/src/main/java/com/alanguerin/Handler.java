@@ -111,11 +111,4 @@ public class Handler implements RequestHandler<CloudWatchLogsEvent, Void>, Logga
             .isPresent();
     }
     
-    private boolean isFiltered(Level level) {
-        return Optional.ofNullable(getEnv("ROLLBAR_FILTER_THRESHOLD"))
-            .map(Level::lookupByName)
-            .filter(threshold -> level.level() >= threshold.level())
-            .isPresent();
-    }
-    
 }
