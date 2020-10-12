@@ -10,7 +10,7 @@ You will need to add two configuration files to run this project: a _dotenv_, an
 
 ### Environment config
 
-First, create a _dotenv_ environment file such as `.env.{stage}` (i.e. `.env.live`) in the project directory.
+First, create a _dotenv_ environment file such as `.env.{stage}` (e.g. `.env.live`) in the project directory.
 Use the following configuration as a template to get you started, adding your own values where appropriate:
 
 ```dotenv
@@ -30,7 +30,7 @@ and ERROR logs. `INFO` will send INFO, WARNING, and ERROR logs.
 ### Serverless config
 
 You will then need to add a `.env-config.yml` file, to specify the CloudWatch log subscriptions to subscribe our AWS
-Lambda to in the project's `serverless.yml` file.
+Lambda to, in the project's `serverless.yml` file.
 
 ```yaml
 cloudwatchLogs:
